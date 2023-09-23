@@ -25,17 +25,11 @@ Sanket Shinde – 40233057<br>
 ## Deliverable #1
 <br>
 <table border="3px solid">
-
    <tbody border="2px solid">
-
      <tr>
-
       <td><b>Member Name<b></td>
-
       <td colspan="5" align="center"><b>Deliverable 1<b></td>
-
      </tr>
-
      <tr>
 
       <td>Malay Sarjul Sheth</td>
