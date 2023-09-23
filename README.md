@@ -46,7 +46,7 @@ Sanket Shinde – 40233057<br>
       <td>Joyal Rakeshkumar Shah</td>
       <td>Problem 1 : Contributed in question and metric formulation</td>
       <td>Problem 2: Discussed in constructing UseCase diagram</td>
-      <td>Problem 2: Built a table for usecase diagram discription</td>
+      <td>Problem 2: Built a table for usecase diagram description</td>
      </tr>
      <tr>
       <td>Snehil Sharma</td>
