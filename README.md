@@ -31,69 +31,34 @@ Sanket Shinde – 40233057<br>
       <td colspan="5" align="center"><b>Deliverable 1<b></td>
      </tr>
      <tr>
-
       <td>Malay Sarjul Sheth</td>
-
       <td>Problem 1 : Introduction</td>
-
       <td>Problem 1: Goal,question and metric formulation</td>
-
       <td>Problem 2: Discussed in constructing UseCase diagram</td>
-
      </tr>
-
      <tr>
-
       <td>Shreyans Sharma</td>
-
       <td>Problem 1 : Contributed in question and metric formulation</td>
-
       <td>Problem 2: Constructed Usecase diagram</td>
-
       <td>Problem 2: Formatting latex document</td>
-      
      </tr>
-
      <tr>
-
       <td>Joyal Rakeshkumar Shah</td>
-
       <td>Problem 1 : Contributed in question and metric formulation</td>
-
       <td>Problem 2: Discussed in constructing UseCase diagram</td>
-
       <td>Problem 2: Built a table for usecase diagram discription</td>
-
      </tr>
-
      <tr>
-
       <td>Snehil Sharma</td>
-
       <td>Problem 1 : Contributed in question and metric formulation</td>
-
       <td>Problem 2: Discussed in constructing UseCase diagram</td>
-
       <td>Problem 2: Created latex document</td>
-
      </tr>
-
      <tr>
-
       <td>Sanket Shinde</td>
-
       <td>Problem 1 : Contributed in question and metric formulation</td>
-
       <td>Problem 2: Discussed in constructing UseCase diagram</td>
-
       <td>Problem 2: Contributed in latex documenting</td>
-
-
      </tr>
-
- 
-
    </tbody>
-
   </table>
-
