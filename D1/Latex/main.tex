@@ -1,0 +1,45 @@
+\documentclass[a4paper]{report}
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\bibliographystyle{unsrt}
+\usepackage{enumitem}
+\usepackage[printonlyused,withpage]{acronym}
+\usepackage[nottoc,numbib]{tocbibind}
+
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% important packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+
+\usepackage{tabularx}
+
+\usepackage{float}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}{}{0pt}{\Huge}
+  
+\usepackage{lipsum} 
+
+\title{METRICSTICS}
+\author{Prof. PANKAJ KAMTHAN}
+
+\begin{document}
+\input{title/title.tex}
+
+\tableofcontents
+\input{sections/listfigures}
+\input{sections/acronyms}
+
+\input{sections/introduction}
+\input{sections/problem1}
+\input{sections/problem2}
+\renewcommand{\bibname}{References}
+\bibliography{references}
+\end{document}
