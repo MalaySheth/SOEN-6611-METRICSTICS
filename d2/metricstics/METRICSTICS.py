@@ -1,5 +1,5 @@
-from D2.METRICSTICS.data_computation.data_analyzer import DataAnalyzer
-from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
+from d2.metricstics.data_computation.data_analyzer import DataAnalyzer
+from d2.metricstics.data_computation.data_statistics import DataStatistics
 
 # Input data as a list
 data = []
