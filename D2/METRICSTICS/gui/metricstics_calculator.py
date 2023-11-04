@@ -19,8 +19,9 @@ class MetricsticsCalculator:
 
         # Buttons for operations
         ttk.Button(self.root, text=".", command=lambda: self.add_digit(".")).grid(row=4, column=0)
-        ttk.Button(self.root, text="Clear", command=self.clear_entry).grid(row=1, column=4)  # Move "Clear" to column 1
-        ttk.Button(self.root, text="Append", command=self.add_value).grid(row=2, column=4)  # Move "Plus" to column 2
+        ttk.Button(self.root, text="-", command=lambda: self.add_minus()).grid(row=4, column=2)
+        ttk.Button(self.root, text="Clear", command=self.clear_entry).grid(row=1, column=4)
+        ttk.Button(self.root, text="Append", command=self.add_value).grid(row=2, column=4)
 
         # Buttons for statistics calculations
         ttk.Button(self.root, text="Mean", command=self.calculate_mean).grid(row=5, column=0)
@@ -47,7 +48,8 @@ class MetricsticsCalculator:
         col = 0
         for label in button_labels:
             if label == "0":
-                ttk.Button(self.root, text=label, command=lambda l=label: self.add_digit(l)).grid(row=row, column=col + 1)
+                ttk.Button(self.root, text=label, command=lambda l=label: self.add_digit(l)).grid(row=row,
+                                                                                                  column=col + 1)
             else:
                 ttk.Button(self.root, text=label, command=lambda l=label: self.add_digit(l)).grid(row=row, column=col)
             col += 1
@@ -71,6 +73,17 @@ class MetricsticsCalculator:
             except ValueError:
                 self.result_label.config(text="Invalid input. Please enter a valid number.")
                 self.data_entry.delete(0, tk.END)
+
+    def add_minus(self):
+        current_data = self.data_entry.get()
+        if not current_data or current_data == "-":
+            self.data_entry.delete(0, tk.END)
+            self.data_entry.insert(0, "-")
+        elif current_data == "-":
+            self.data_entry.delete(0, tk.END)
+        else:
+            self.data_entry.delete(0, tk.END)
+            self.data_entry.insert(0, "-" + current_data)
 
     def clear_entry(self):
         self.data_entry.delete(0, tk.END)
