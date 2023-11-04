@@ -2,8 +2,8 @@ import tkinter as tk
 from statistics import mean, median, mode
 from tkinter import ttk
 
-from data_computation.data_analyzer import DataAnalyzer
-from data_computation.data_statistics import DataStatistics
+from D2.METRICSTICS.data_computation.data_analyzer import DataAnalyzer
+from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
 
 
 class MetricsticsCalculator:

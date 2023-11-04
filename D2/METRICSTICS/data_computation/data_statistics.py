@@ -1,5 +1,5 @@
-from data_analyzer import DataAnalyzer
-from utils.utility_functions import CustomMathUtils
+from D2.METRICSTICS.data_computation.data_analyzer import DataAnalyzer
+from D2.METRICSTICS.utils.utility_functions import CustomMathUtils
 
 
 class DataStatistics:
