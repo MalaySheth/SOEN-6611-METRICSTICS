@@ -1,4 +1,3 @@
-from d2.metricstics.data_computation.data_analyzer import DataAnalyzer
 from d2.metricstics.data_computation.data_statistics import DataStatistics
 
 # Input data as a list
@@ -16,7 +15,6 @@ while True:
 
 # Check if the data list is not empty
 if data:
-    analyzer = DataAnalyzer(data)
     statistics = DataStatistics(data)
 
     # Display a menu for the user to select a metric
@@ -35,9 +33,9 @@ if data:
         choice = input("Enter the number of your choice: ")
 
         if choice == '1':
-            print(f"Mean (μ): {analyzer.mean()}")
+            print(f"Mean (μ): {statistics.mean()}")
         elif choice == '2':
-            print(f"Standard Deviation (σ): {analyzer.standard_deviation()}")
+            print(f"Standard Deviation (σ): {statistics.standard_deviation()}")
         elif choice == '3':
             print(f"Maximum: {statistics.maximum()}")
         elif choice == '4':
