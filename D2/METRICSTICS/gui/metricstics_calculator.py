@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 
+from d2.metricstics.data_computation.data_processor import DataProcessor
 from d2.metricstics.data_computation.data_statistics import DataStatistics
 
 
@@ -29,6 +30,9 @@ class MetricsticsCalculator:
         ttk.Button(self.root, text="Maximum", command=self.calculate_maximum).grid(row=6, column=1)
         ttk.Button(self.root, text="MAD", command=self.calculate_mad).grid(row=6, column=2)
         ttk.Button(self.root, text="Std Dev", command=self.calculate_std_dev).grid(row=7, column=1)
+
+        # "Upload CSV" button
+        ttk.Button(self.root, text="Upload CSV", command=self.upload_csv).grid(row=3, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.root, text="", font=('Helvetica', 16))
@@ -99,6 +103,19 @@ class MetricsticsCalculator:
         statistics = DataStatistics(self.values)
         std_dev = statistics.standard_deviation()
         self.result_label.config(text=f"Std Dev: {std_dev:.2f}")
+
+    def upload_csv(self):
+        # Open a file dialog to select a CSV file
+        file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+        if file_path:
+            # Read data from the selected CSV file using DataProcessor
+            data_processor = DataProcessor()
+            data_from_csv = data_processor.load_data_from_csv(file_path)
+
+            # Clear the existing values and update the data_entry with the data from CSV
+            self.values = data_from_csv
+            self.data_entry.delete(0, tk.END)
+            self.data_entry.insert(0, ", ".join(map(str, data_from_csv)))
 
 
 if __name__ == "__main__":
