@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 
-from d2.metricstics.data_computation.data_processor import DataProcessor
-from d2.metricstics.data_computation.data_statistics import DataStatistics
+from D2.METRICSTICS.data_computation.data_processor import DataProcessor
+from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
 
 
 class MetricsticsCalculator:

@@ -1,4 +1,4 @@
-from d2.metricstics.utils.utility_functions import CustomMathUtils
+from D2.METRICSTICS.utils.utility_functions import CustomMathUtils
 
 
 class DataStatistics:
