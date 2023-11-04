@@ -101,7 +101,13 @@ class MetricsticsCalculator:
     def calculate_mode(self):
         statistics = DataStatistics(self.values)
         mode_values = statistics.mode()
-        self.result_label.config(text=f"Mode: {', '.join(map(str, mode_values))}")
+
+        if len(mode_values) <= 10:
+            mode_str = ', '.join(map(str, mode_values))
+        else:
+            mode_str = f"{len(mode_values)} mode values found."
+
+        self.result_label.config(text=f"Mode: {mode_str}")
 
     def calculate_minimum(self):
         statistics = DataStatistics(self.values)
@@ -127,14 +133,13 @@ class MetricsticsCalculator:
         # Open a file dialog to select a CSV file
         file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
         if file_path:
-            # Read data from the selected CSV file using DataProcessor
             data_processor = DataProcessor()
             data_from_csv = data_processor.load_data_from_csv(file_path)
 
             # Clear the existing values and update the data_entry with the data from CSV
             self.values = data_from_csv
             self.data_entry.delete(0, tk.END)
-            self.data_entry.insert(0, ", ".join(map(str, data_from_csv)))
+            self.result_label.config(text="Data successfully loaded from csv")
 
 
 if __name__ == "__main__":
