@@ -12,7 +12,7 @@ class MetricsticsCalculator:
 
         # Entry for data input
         self.data_entry = ttk.Entry(self.root, width=40)
-        self.data_entry.grid(row=0, column=0, columnspan=4, padx=10, pady=10)
+        self.data_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
 
         # Buttons for numeric digits (0-9)
         self.create_digit_buttons()
@@ -63,8 +63,14 @@ class MetricsticsCalculator:
     def add_value(self):
         value = self.data_entry.get()
         if value:
-            self.values.append(float(value))
-            self.data_entry.delete(0, tk.END)
+            try:
+                num = float(value)
+                self.values.append(num)
+                self.data_entry.delete(0, tk.END)
+                self.result_label.config(text="Last data appended: " + str(num))
+            except ValueError:
+                self.result_label.config(text="Invalid input. Please enter a valid number.")
+                self.data_entry.delete(0, tk.END)
 
     def clear_entry(self):
         self.data_entry.delete(0, tk.END)
