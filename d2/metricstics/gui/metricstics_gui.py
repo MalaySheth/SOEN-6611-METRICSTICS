@@ -7,7 +7,7 @@ from d2.metricstics.data_computation.data_statistics import DataStatistics
 class MetricsticsCalculator:
     def __init__(self, root):
         self.root = root
-        self.root.title("METRICSTICS Calculator")
+        self.root.title("METRICSTICS Calculator - (Team O)")
 
         # Entry for data input
         self.data_entry = ttk.Entry(self.root, width=40)
