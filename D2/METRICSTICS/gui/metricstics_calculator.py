@@ -1,3 +1,4 @@
+import json
 import tkinter
 import tkinter as tk
 import tkinter.simpledialog
@@ -238,8 +239,16 @@ class MetricsticsCalculator:
             user_manager = UserManagement()
             historical_data = user_manager.get_user_history(self.logged_in_userid)
 
+            selected_row = None  # Variable to store the selected row
+
+            def on_row_select(event):
+                nonlocal selected_row
+                item = tree.selection()
+                if item:
+                    selected_row = tree.item(item, "values")
+
             # Create a Treeview widget for displaying the table
-            tree = ttk.Treeview(history_window)
+            tree = ttk.Treeview(history_window, selectmode="browse")
             tree["columns"] = ("ID", "Dataset Name", "Actual Data")
             tree.column("#0", width=0, stretch=tk.NO)  # Hide the first column
 
@@ -261,14 +270,52 @@ class MetricsticsCalculator:
             scrollbar.grid(row=0, column=1, sticky="ns")
             tree.configure(yscrollcommand=scrollbar.set)
 
-            # Adjust column widths
-            for col in ("ID", "Dataset Name", "Actual Data"):
-                tree.column(col, width=150, anchor=tk.W)
+            # Bind the on_row_select function to the click event on rows
+            tree.bind("<ButtonRelease-1>", on_row_select)
+
+            # Create a label for displaying messages
+            message_label = ttk.Label(history_window, text="")
+            message_label.grid(row=len(historical_data) + 2, column=0, columnspan=2, pady=10)
+
+            # Add a "Load DataSet" button at the bottom
+            load_button = ttk.Button(history_window, text="Load DataSet",
+                                     command=lambda: self.load_selected_dataset(selected_row, message_label))
+            load_button.grid(row=len(historical_data) + 1, column=0, columnspan=3, pady=10)
 
             # Make the window resizable
             history_window.resizable(True, True)
         else:
             self.result_label.config(text="Please login before watching the history.")
+
+    def load_selected_dataset(self, selected_row, message_label):
+        if selected_row:
+            # Assuming selected_row is a tuple with (ID, Dataset Name, Actual Data)
+            dataset_id, dataset_name, actual_data = selected_row
+
+            # Clear existing values
+            self.values = []
+
+            # Check if actual_data is bytes, then decode it
+            if isinstance(actual_data, bytes):
+                actual_data_str = actual_data.decode('utf-8')
+            else:
+                actual_data_str = actual_data
+
+            # Print actual_data_str for debugging
+            # print("Actual Data String from the selected row:", actual_data_str)
+
+            try:
+                # Deserialize actual_data_str (JSON string) into a list
+                self.values = json.loads(actual_data_str)
+                message_label.config(text="Dataset successfully loaded.")
+                self.result_label.config(text="Dataset loaded successfully.")
+            except json.JSONDecodeError as e:
+                print(f"Error loading dataset. JSONDecodeError: {e}")
+                message_label.config(text="Error loading dataset. Please check the format of the data.")
+                self.result_label.config(text="Error loading dataset. Please check the format of the data.")
+        else:
+            message_label.config(text="Please select a row before clicking Load DataSet")
+            self.result_label.config(text="Please select a row before clicking Load DataSet")
 
     def logout(self):
         # Reset logged-in variables
