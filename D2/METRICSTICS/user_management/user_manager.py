@@ -42,7 +42,7 @@ class UserManagement:
     def authenticate_user(self, username, password_hash):
         try:
             cursor = self.connection.cursor()
-            cursor.execute("SELECT * FROM users WHERE username=%s AND password_hash=%s",
+            cursor.execute("SELECT * FROM users WHERE BINARY username=%s AND BINARY password_hash=%s",
                            (username, password_hash))
             user = cursor.fetchone()
             if user:
