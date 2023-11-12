@@ -1,3 +1,5 @@
+import json
+
 import mysql.connector
 from mysql.connector import Error
 
@@ -45,7 +47,7 @@ class UserManagement:
             user = cursor.fetchone()
             if user:
                 print('Authentication successful')
-                return True
+                return user
             else:
                 print('Authentication failed')
                 return False
@@ -55,10 +57,27 @@ class UserManagement:
 
     def save_dataset(self, user_id, dataset_name, data):
         try:
+            # Convert the list to a JSON string
+            data_str = json.dumps(data)
+
             cursor = self.connection.cursor()
             cursor.execute("INSERT INTO datasets (user_id, dataset_name, data) VALUES (%s, %s, %s)",
-                           (user_id, dataset_name, data))
+                           (user_id, dataset_name, data_str))
             self.connection.commit()
             print('Dataset saved successfully')
         except Error as e:
             print(f'Error: {e}')
+
+    def get_user_history(self, user_id):
+        try:
+            cursor = self.connection.cursor()
+
+            # Assuming there's a 'datasets' table with columns 'user_id', 'dataset_name', and 'data'
+            cursor.execute("SELECT dataset_name, data FROM datasets WHERE user_id = %s", (user_id,))
+            historical_data = cursor.fetchall()
+
+            return historical_data
+
+        except Error as e:
+            print(f'Error: {e}')
+            return []

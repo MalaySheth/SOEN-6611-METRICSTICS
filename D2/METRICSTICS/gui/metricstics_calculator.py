@@ -40,6 +40,12 @@ class MetricsticsCalculator:
         # "Upload CSV" button
         ttk.Button(self.root, text="Upload CSV", command=self.upload_csv).grid(row=4, column=4)
 
+        # "Save Dataset" button
+        ttk.Button(self.root, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
+
+        # "Show History" button
+        ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=6, column=4)
+
         # "Login" button
         ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=8, column=4)
 
@@ -51,6 +57,8 @@ class MetricsticsCalculator:
         self.values = []
         # Variable to store the logged-in username
         self.logged_in_username = None
+        # Variable to store the logged-in userid
+        self.logged_in_userid = None
         # Variable to store the login window
         self.login_window = None
 
@@ -180,9 +188,11 @@ class MetricsticsCalculator:
 
         # Validate credentials using UserManager
         user_manager = UserManagement()
-        if user_manager.authenticate_user(entered_username, entered_password):
+        user = user_manager.authenticate_user(entered_username, entered_password)
+        if user:
             # Successful login
             self.logged_in_username = entered_username
+            self.logged_in_userid = user[0]
             self.username_label.config(text=f"Logged in as: {self.logged_in_username}")
             messagebox.showinfo("Login Successful", "Welcome, " + entered_username + "!")
 
@@ -191,6 +201,41 @@ class MetricsticsCalculator:
         else:
             # Failed login
             messagebox.showerror("Login Failed", "Invalid username or password")
+
+    def save_dataset(self):
+        # Check if a user is logged in
+        if self.logged_in_username:
+            # Check if there is data to save
+            if self.values:
+                # Save the dataset using the DataSaver
+                user_manager = UserManagement()
+                user_manager.save_dataset(self.logged_in_userid, 'MyDS', self.values)
+                self.result_label.config(text="Dataset successfully saved.")
+            else:
+                self.result_label.config(text="No data to save.")
+        else:
+            self.result_label.config(text="Please login before saving the dataset.")
+
+    def show_history(self):
+        if self.logged_in_username:
+            # Create a new window for showing history
+            history_window = tk.Toplevel(self.root)
+            history_window.title("Data History")
+
+            # Get historical data from the backend using UserManagement
+            user_manager = UserManagement()
+            historical_data = user_manager.get_user_history(self.logged_in_userid)
+
+            if historical_data:
+                # Display historical data in the new window
+                for idx, (dataset_name, data) in enumerate(historical_data, start=1):
+                    ttk.Label(history_window, text=f"Dataset {idx}: {dataset_name}").grid(row=idx, column=0, padx=10,
+                                                                                          pady=5)
+                    ttk.Label(history_window, text=f"Actual Data: {data}").grid(row=idx, column=1, padx=10, pady=5)
+            else:
+                ttk.Label(history_window, text="No historical data available.").grid(row=0, column=0, padx=10, pady=5)
+        else:
+            self.result_label.config(text="Please login before watching the history.")
 
 
 if __name__ == "__main__":
