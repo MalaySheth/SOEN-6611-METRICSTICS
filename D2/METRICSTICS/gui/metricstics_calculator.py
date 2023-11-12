@@ -1,14 +1,19 @@
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, messagebox
 
 from D2.METRICSTICS.data_computation.data_processor import DataProcessor
 from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
+from D2.METRICSTICS.user_management.user_manager import UserManagement
 
 
 class MetricsticsCalculator:
     def __init__(self, root):
         self.root = root
         self.root.title("METRICSTICS Calculator - (Team O)")
+
+        # Username label at the top
+        self.username_label = ttk.Label(self.root, text="", font=('Helvetica', 12))
+        self.username_label.grid(row=0, column=4, columnspan=4, padx=10, pady=10)
 
         # Entry for data input
         self.data_entry = ttk.Entry(self.root, width=40)
@@ -18,33 +23,40 @@ class MetricsticsCalculator:
         self.create_digit_buttons()
 
         # Buttons for operations
-        ttk.Button(self.root, text=".", command=lambda: self.add_digit(".")).grid(row=4, column=0)
-        ttk.Button(self.root, text="-", command=lambda: self.add_minus()).grid(row=4, column=2)
-        ttk.Button(self.root, text="Clear", command=self.clear_entry).grid(row=1, column=4)
-        ttk.Button(self.root, text="Append", command=self.add_value).grid(row=2, column=4)
+        ttk.Button(self.root, text=".", command=lambda: self.add_digit(".")).grid(row=5, column=0)
+        ttk.Button(self.root, text="-", command=lambda: self.add_minus()).grid(row=5, column=2)
+        ttk.Button(self.root, text="Clear", command=self.clear_entry).grid(row=2, column=4)
+        ttk.Button(self.root, text="Append", command=self.add_value).grid(row=3, column=4)
 
         # Buttons for statistics calculations
-        ttk.Button(self.root, text="Mean", command=self.calculate_mean).grid(row=5, column=0)
-        ttk.Button(self.root, text="Median", command=self.calculate_median).grid(row=5, column=1)
-        ttk.Button(self.root, text="Mode", command=self.calculate_mode).grid(row=5, column=2)
-        ttk.Button(self.root, text="Minimum", command=self.calculate_minimum).grid(row=6, column=0)
-        ttk.Button(self.root, text="Maximum", command=self.calculate_maximum).grid(row=6, column=1)
-        ttk.Button(self.root, text="MAD", command=self.calculate_mad).grid(row=6, column=2)
-        ttk.Button(self.root, text="Std Dev", command=self.calculate_std_dev).grid(row=7, column=1)
+        ttk.Button(self.root, text="Mean", command=self.calculate_mean).grid(row=6, column=0)
+        ttk.Button(self.root, text="Median", command=self.calculate_median).grid(row=6, column=1)
+        ttk.Button(self.root, text="Mode", command=self.calculate_mode).grid(row=6, column=2)
+        ttk.Button(self.root, text="Minimum", command=self.calculate_minimum).grid(row=7, column=0)
+        ttk.Button(self.root, text="Maximum", command=self.calculate_maximum).grid(row=7, column=1)
+        ttk.Button(self.root, text="MAD", command=self.calculate_mad).grid(row=7, column=2)
+        ttk.Button(self.root, text="Std Dev", command=self.calculate_std_dev).grid(row=8, column=1)
 
         # "Upload CSV" button
-        ttk.Button(self.root, text="Upload CSV", command=self.upload_csv).grid(row=3, column=4)
+        ttk.Button(self.root, text="Upload CSV", command=self.upload_csv).grid(row=4, column=4)
+
+        # "Login" button
+        ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=8, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.root, text="", font=('Helvetica', 16))
-        self.result_label.grid(row=8, column=0, columnspan=4, padx=10, pady=10)
+        self.result_label.grid(row=9, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
         self.values = []
+        # Variable to store the logged-in username
+        self.logged_in_username = None
+        # Variable to store the login window
+        self.login_window = None
 
     def create_digit_buttons(self):
         button_labels = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"]
-        row = 1
+        row = 2
         col = 0
         for label in button_labels:
             if label == "0":
@@ -140,6 +152,45 @@ class MetricsticsCalculator:
             self.values = data_from_csv
             self.data_entry.delete(0, tk.END)
             self.result_label.config(text="Data successfully loaded from csv")
+
+    def show_login_window(self):
+        # Create a new window for login
+        self.login_window = tk.Toplevel(self.root)
+        self.login_window.title("Login")
+
+        # Entry for username
+        ttk.Label(self.login_window, text="Username:").grid(row=0, column=0, padx=10, pady=10)
+        self.username_entry = ttk.Entry(self.login_window, width=20)
+        self.username_entry.grid(row=0, column=1, padx=10, pady=10)
+
+        # Entry for password
+        ttk.Label(self.login_window, text="Password:").grid(row=1, column=0, padx=10, pady=10)
+        self.password_entry = ttk.Entry(self.login_window, show="*", width=20)
+        self.password_entry.grid(row=1, column=1, padx=10, pady=10)
+
+        # Login button in the login window
+        ttk.Button(self.login_window, text="Login", command=lambda: self.login(self.login_window)).grid(row=2, column=0,
+                                                                                                        columnspan=2,
+                                                                                                        pady=10)
+
+    def login(self, login_window):
+        # Get entered username and password
+        entered_username = self.username_entry.get()
+        entered_password = self.password_entry.get()
+
+        # Validate credentials using UserManager
+        user_manager = UserManagement()
+        if user_manager.authenticate_user(entered_username, entered_password):
+            # Successful login
+            self.logged_in_username = entered_username
+            self.username_label.config(text=f"Logged in as: {self.logged_in_username}")
+            messagebox.showinfo("Login Successful", "Welcome, " + entered_username + "!")
+
+            # Close the login window
+            login_window.destroy()
+        else:
+            # Failed login
+            messagebox.showerror("Login Failed", "Invalid username or password")
 
 
 if __name__ == "__main__":
