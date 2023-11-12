@@ -1,4 +1,6 @@
+import tkinter
 import tkinter as tk
+import tkinter.simpledialog
 from tkinter import ttk, filedialog, messagebox
 
 from D2.METRICSTICS.data_computation.data_processor import DataProcessor
@@ -210,10 +212,17 @@ class MetricsticsCalculator:
         if self.logged_in_username:
             # Check if there is data to save
             if self.values:
-                # Save the dataset using the DataSaver
-                user_manager = UserManagement()
-                user_manager.save_dataset(self.logged_in_userid, 'MyDS', self.values)
-                self.result_label.config(text="Dataset successfully saved.")
+                # Prompt user for dataset name
+                dataset_name = tkinter.simpledialog.askstring("Input", "Enter the name of the dataset:")
+
+                # Check if the user provided a name
+                if dataset_name:
+                    # Save the dataset using the DataSaver
+                    user_manager = UserManagement()
+                    user_manager.save_dataset(self.logged_in_userid, dataset_name, self.values)
+                    self.result_label.config(text="Dataset successfully saved.")
+                else:
+                    self.result_label.config(text="Dataset name cannot be empty.")
             else:
                 self.result_label.config(text="No data to save.")
         else:
