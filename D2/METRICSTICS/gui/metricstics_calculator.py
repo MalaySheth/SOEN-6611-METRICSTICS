@@ -12,7 +12,7 @@ class MetricsticsCalculator:
         self.root.title("METRICSTICS Calculator - (Team O)")
 
         # Username label at the top
-        self.username_label = ttk.Label(self.root, text="", font=('Helvetica', 12))
+        self.username_label = ttk.Label(self.root, text="Logged in as: Guest", font=('Helvetica', 12))
         self.username_label.grid(row=0, column=4, columnspan=4, padx=10, pady=10)
 
         # Entry for data input
@@ -48,6 +48,9 @@ class MetricsticsCalculator:
 
         # "Login" button
         ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=8, column=4)
+
+        # logout button
+        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=9, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.root, text="", font=('Helvetica', 16))
@@ -256,6 +259,19 @@ class MetricsticsCalculator:
             history_window.resizable(True, True)
         else:
             self.result_label.config(text="Please login before watching the history.")
+
+    def logout(self):
+        # Reset logged-in variables
+        self.logged_in_username = None
+        self.logged_in_userid = None
+
+        # Update username label
+        self.username_label.config(text="Logged in as: Guest")
+
+        # Clear values and result label
+        self.values = []
+        self.data_entry.delete(0, tk.END)
+        self.result_label.config(text="")
 
 
 if __name__ == "__main__":
