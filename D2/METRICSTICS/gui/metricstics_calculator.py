@@ -226,14 +226,34 @@ class MetricsticsCalculator:
             user_manager = UserManagement()
             historical_data = user_manager.get_user_history(self.logged_in_userid)
 
-            if historical_data:
-                # Display historical data in the new window
-                for idx, (dataset_name, data) in enumerate(historical_data, start=1):
-                    ttk.Label(history_window, text=f"Dataset {idx}: {dataset_name}").grid(row=idx, column=0, padx=10,
-                                                                                          pady=5)
-                    ttk.Label(history_window, text=f"Actual Data: {data}").grid(row=idx, column=1, padx=10, pady=5)
-            else:
-                ttk.Label(history_window, text="No historical data available.").grid(row=0, column=0, padx=10, pady=5)
+            # Create a Treeview widget for displaying the table
+            tree = ttk.Treeview(history_window)
+            tree["columns"] = ("Dataset Name", "Actual Data")
+            tree.column("#0", width=0, stretch=tk.NO)  # Hide the first column
+
+            # Define column headings
+            tree.heading("#0", text="", anchor=tk.W)
+            tree.heading("Dataset Name", text="Dataset Name", anchor=tk.W)
+            tree.heading("Actual Data", text="Actual Data", anchor=tk.W)
+
+            # Insert data into the treeview
+            for idx, (dataset_name, data) in enumerate(historical_data, start=1):
+                tree.insert("", idx, values=(dataset_name, data))
+
+            # Display the treeview
+            tree.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
+
+            # Add scrollbar to the treeview
+            scrollbar = ttk.Scrollbar(history_window, orient="vertical", command=tree.yview)
+            scrollbar.grid(row=0, column=1, sticky="ns")
+            tree.configure(yscrollcommand=scrollbar.set)
+
+            # Adjust column widths
+            for col in ("Dataset Name", "Actual Data"):
+                tree.column(col, width=150, anchor=tk.W)
+
+            # Make the window resizable
+            history_window.resizable(True, True)
         else:
             self.result_label.config(text="Please login before watching the history.")
 
