@@ -73,7 +73,7 @@ class UserManagement:
             cursor = self.connection.cursor()
 
             # Assuming there's a 'datasets' table with columns 'user_id', 'dataset_name', and 'data'
-            cursor.execute("SELECT dataset_name, data FROM datasets WHERE user_id = %s", (user_id,))
+            cursor.execute("SELECT id, dataset_name, data FROM datasets WHERE user_id = %s", (user_id,))
             historical_data = cursor.fetchall()
 
             return historical_data

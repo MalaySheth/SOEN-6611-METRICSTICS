@@ -240,17 +240,18 @@ class MetricsticsCalculator:
 
             # Create a Treeview widget for displaying the table
             tree = ttk.Treeview(history_window)
-            tree["columns"] = ("Dataset Name", "Actual Data")
+            tree["columns"] = ("ID", "Dataset Name", "Actual Data")
             tree.column("#0", width=0, stretch=tk.NO)  # Hide the first column
 
             # Define column headings
             tree.heading("#0", text="", anchor=tk.W)
+            tree.heading("ID", text="ID", anchor=tk.W)
             tree.heading("Dataset Name", text="Dataset Name", anchor=tk.W)
             tree.heading("Actual Data", text="Actual Data", anchor=tk.W)
 
             # Insert data into the treeview
-            for idx, (dataset_name, data) in enumerate(historical_data, start=1):
-                tree.insert("", idx, values=(dataset_name, data))
+            for idx, (id, dataset_name, data) in enumerate(historical_data, start=1):
+                tree.insert("", idx, values=(id, dataset_name, data))
 
             # Display the treeview
             tree.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
@@ -261,7 +262,7 @@ class MetricsticsCalculator:
             tree.configure(yscrollcommand=scrollbar.set)
 
             # Adjust column widths
-            for col in ("Dataset Name", "Actual Data"):
+            for col in ("ID", "Dataset Name", "Actual Data"):
                 tree.column(col, width=150, anchor=tk.W)
 
             # Make the window resizable
