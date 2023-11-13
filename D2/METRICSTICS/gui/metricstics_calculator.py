@@ -300,11 +300,10 @@ class MetricsticsCalculator:
 
     def reset_dataset(self):
         # Ask for confirmation
-        confirmation = tkinter.simpledialog.askstring("Confirmation",
-                                                      "Are you sure you want to empty the current dataset values? "
-                                                      "(yes/no)")
+        confirmation = messagebox.askyesno("Confirmation",
+                                           "Are you sure you want to empty the current dataset values?")
 
-        if confirmation and confirmation.lower() == 'yes':
+        if confirmation:
             # Reset the dataset
             self.values = []
             self.data_entry.delete(0, tk.END)
@@ -329,6 +328,28 @@ class MetricsticsCalculator:
                 item = tree.selection()
                 if item:
                     selected_row = tree.item(item, "values")
+
+            def delete_selected_dataset():
+                nonlocal selected_row
+                if selected_row:
+                    dataset_id = selected_row[0]
+                    dataset_name = selected_row[1]
+
+                    # Ask for confirmation
+                    confirmation = messagebox.askyesno("Confirmation",
+                                                       f"Are you sure you want to delete the dataset '{dataset_name}'?")
+
+                    if confirmation:
+                        # Call the delete_dataset method in UserManager to delete the dataset
+                        user_manager.delete_dataset(dataset_id, self.logged_in_userid)
+                        messagebox.showinfo("Dataset Deleted", "Dataset successfully deleted.")
+
+                        # Refresh the history window after deletion
+                        history_window.destroy()
+                        self.show_history()
+                else:
+                    messagebox.showinfo("No Dataset Selected", "Please select a dataset to delete.")
+                    message_label.config(text="Please select a row before clicking Delete DataSet")
 
             # Create a Treeview widget for displaying the table
             tree = ttk.Treeview(history_window, selectmode="browse")
@@ -358,12 +379,16 @@ class MetricsticsCalculator:
 
             # Create a label for displaying messages
             message_label = ttk.Label(history_window, text="")
-            message_label.grid(row=len(historical_data) + 2, column=0, columnspan=2, pady=10)
+            message_label.grid(row=len(historical_data) + 3, column=0, columnspan=2, pady=10)
 
             # Add a "Load DataSet" button at the bottom
             load_button = ttk.Button(history_window, text="Load DataSet",
                                      command=lambda: self.load_selected_dataset(selected_row, message_label))
-            load_button.grid(row=len(historical_data) + 1, column=0, columnspan=3, pady=10)
+            load_button.grid(row=len(historical_data) + 1, column=0, pady=10)
+
+            # Add a "Delete DataSet" button at the bottom under the table
+            delete_button = ttk.Button(history_window, text="Delete DataSet", command=delete_selected_dataset)
+            delete_button.grid(row=len(historical_data) + 2, column=0, pady=10)
 
             # Make the window resizable
             history_window.resizable(True, True)
@@ -397,6 +422,7 @@ class MetricsticsCalculator:
                 message_label.config(text="Error loading dataset. Please check the format of the data.")
                 self.result_label.config(text="Error loading dataset. Please check the format of the data.")
         else:
+            messagebox.showinfo("No Dataset Selected", "Please select a dataset to load.")
             message_label.config(text="Please select a row before clicking Load DataSet")
             self.result_label.config(text="Please select a row before clicking Load DataSet")
 
