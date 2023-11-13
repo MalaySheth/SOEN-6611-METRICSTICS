@@ -238,17 +238,20 @@ class MetricsticsCalculator:
         new_username = self.new_username_entry.get()
         new_password = self.new_password_entry.get()
 
+        if not new_username or not new_password:
+            messagebox.showinfo("Cannot be Empty", "Username and password cannot be empty.")
+            return
+
         # Validate and create a new user using UserManager
         user_manager = UserManagement()
-        success = user_manager.signup_user(new_username, new_password)
+        user_exists = user_manager.signup_user(new_username, new_password)
 
-        if success:
+        if user_exists:
+            messagebox.showinfo("Exists", "Username already exists. Please choose a different username.")
+        else:
             # Successful signup
             messagebox.showinfo("Signup Successful", "User created successfully. You can now log in.")
             signup_window.destroy()
-        else:
-            # Failed signup
-            messagebox.showerror("Signup Failed", "Failed to create user. Please try again.")
 
     def save_dataset(self):
         # Check if a user is logged in

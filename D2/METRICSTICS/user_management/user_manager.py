@@ -65,7 +65,7 @@ class UserManagement:
 
             if existing_user:
                 print("Username already exists. Please choose a different username.")
-                return False
+                return True
             elif not username or not password:
                 print("Username and password cannot be empty.")
                 return False
@@ -75,7 +75,7 @@ class UserManagement:
                                (username, password))
                 self.connection.commit()
                 print("Signup successful. You can now log in.")
-                return True
+                return False
 
         except Error as e:
             print(f'Error: {e}')
