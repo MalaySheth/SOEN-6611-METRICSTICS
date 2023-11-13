@@ -4,64 +4,84 @@ import tkinter as tk
 import tkinter.simpledialog
 from tkinter import ttk, filedialog, messagebox
 
-from D2.METRICSTICS.data_computation.data_processor import DataProcessor
-from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
-from D2.METRICSTICS.user_management.user_manager import UserManager
+from PIL import Image, ImageTk
+
+from METRICSTICS.data_computation.data_processor import DataProcessor
+from METRICSTICS.data_computation.data_statistics import DataStatistics
+from METRICSTICS.user_management.user_manager import UserManager
 
 
 class MetricsticsCalculator:
     def __init__(self, root):
         self.root = root
         self.root.title("METRICSTICS Calculator - (Team O)")
+        self.root.geometry('800x600')  # Set initial size of the window
+
+        # Load the background image with PIL
+        self.original_image = Image.open("TLMS_20220906_1200x628.png")
+        self.background_image = ImageTk.PhotoImage(self.original_image)
+
+        # Create a label with the image
+        self.background_label = tk.Label(self.root, image=self.background_image)
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Bind the resize event to an event handler
+        self.root.bind('<Configure>', self.resize_background)
+
+        # Create a main frame that will contain everything except the background
+        self.main_frame = ttk.Frame(self.root)
+        self.main_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+
 
         # Username label at the top
-        self.username_label = ttk.Label(self.root, text="Logged in as: Guest", font=('Helvetica', 13))
+        self.username_label = ttk.Label(self.main_frame, text="Logged in as: Guest", font=('Helvetica', 13))
         self.username_label.grid(row=0, column=4, columnspan=4, padx=10, pady=10)
 
         # Entry for data input
-        self.data_entry = ttk.Entry(self.root, width=40)
+        self.data_entry = ttk.Entry(self.main_frame, width=40)
         self.data_entry.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
 
         # Buttons for numeric digits (0-9)
         self.create_digit_buttons()
 
         # Buttons for operations
-        ttk.Button(self.root, text=".", command=lambda: self.add_digit(".")).grid(row=5, column=0)
-        ttk.Button(self.root, text="-", command=lambda: self.add_minus()).grid(row=5, column=2)
-        ttk.Button(self.root, text="Clear", command=self.clear_entry).grid(row=2, column=4)
-        ttk.Button(self.root, text="Append", command=self.add_value).grid(row=3, column=4)
+        ttk.Button(self.main_frame, text=".", command=lambda: self.add_digit(".")).grid(row=5, column=0)
+        ttk.Button(self.main_frame, text="-", command=lambda: self.add_minus()).grid(row=5, column=2)
+        ttk.Button(self.main_frame, text="Clear", command=self.clear_entry).grid(row=2, column=4)
+        ttk.Button(self.main_frame, text="Append", command=self.add_value).grid(row=3, column=4)
 
         # Buttons for statistics calculations
-        ttk.Button(self.root, text="Mean", command=self.calculate_mean).grid(row=6, column=0)
-        ttk.Button(self.root, text="Median", command=self.calculate_median).grid(row=6, column=1)
-        ttk.Button(self.root, text="Mode", command=self.calculate_mode).grid(row=6, column=2)
-        ttk.Button(self.root, text="Minimum", command=self.calculate_minimum).grid(row=7, column=0)
-        ttk.Button(self.root, text="Maximum", command=self.calculate_maximum).grid(row=7, column=1)
-        ttk.Button(self.root, text="MAD", command=self.calculate_mad).grid(row=7, column=2)
-        ttk.Button(self.root, text="Std Dev", command=self.calculate_std_dev).grid(row=8, column=1)
+        ttk.Button(self.main_frame, text="Mean", command=self.calculate_mean).grid(row=6, column=0)
+        ttk.Button(self.main_frame, text="Median", command=self.calculate_median).grid(row=6, column=1)
+        ttk.Button(self.main_frame, text="Mode", command=self.calculate_mode).grid(row=6, column=2)
+        ttk.Button(self.main_frame, text="Minimum", command=self.calculate_minimum).grid(row=7, column=0)
+        ttk.Button(self.main_frame, text="Maximum", command=self.calculate_maximum).grid(row=7, column=1)
+        ttk.Button(self.main_frame, text="MAD", command=self.calculate_mad).grid(row=7, column=2)
+        ttk.Button(self.main_frame, text="Std Dev", command=self.calculate_std_dev).grid(row=8, column=1)
 
         # "Upload CSV" button
-        ttk.Button(self.root, text="Upload CSV", command=self.upload_csv).grid(row=4, column=4)
+        ttk.Button(self.main_frame, text="Upload CSV", command=self.upload_csv).grid(row=4, column=4)
 
         # "Save Dataset" button
-        ttk.Button(self.root, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
+        ttk.Button(self.main_frame, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
 
         # "Reset Dataset" button
-        ttk.Button(self.root, text="Reset Dataset", command=self.reset_dataset).grid(row=6, column=4)
+        ttk.Button(self.main_frame, text="Reset Dataset", command=self.reset_dataset).grid(row=6, column=4)
 
         # "Show History" button
-        ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=7, column=4)
+        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=7, column=4)
 
-        ttk.Button(self.root, text="Signup", command=self.show_signup_window).grid(row=9, column=4)
+        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=9, column=4)
 
         # "Login" button
-        ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=10, column=4)
+        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=10, column=4)
 
         # logout button
-        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=11, column=4)
+        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=11, column=4)
 
         # Label for displaying the result
-        self.result_label = ttk.Label(self.root, text="", font=('Helvetica', 16))
+        self.result_label = ttk.Label(self.main_frame, text="", font=('Helvetica', 16))
         self.result_label.grid(row=12, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
@@ -73,17 +93,30 @@ class MetricsticsCalculator:
         # Variable to store the login window
         self.login_window = None
 
+        #self.root.bind('<Configure>', self.center_widgets)
+
+    def resize_background(self, event):
+        # Resize the background image to the size of the window
+        new_size = (event.width, event.height)
+        resized_image = self.original_image.resize(new_size, Image.Resampling.LANCZOS)
+        self.background_image = ImageTk.PhotoImage(resized_image)
+        self.background_label.config(image=self.background_image)
+        self.background_label.image = self.background_image  # Keep a reference
+
+
+
     def create_digit_buttons(self):
         button_labels = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"]
         row = 2
         col = 0
         for label in button_labels:
+            button = ttk.Button(self.main_frame, text=label, command=lambda l=label: self.add_digit(l))
             if label == "0":
-                ttk.Button(self.root, text=label, command=lambda l=label: self.add_digit(l)).grid(row=row,
-                                                                                                  column=col + 1)
+                # Place the "0" button in the center of the 4th row
+                button.grid(row=row + 2, column=1, pady=5, padx=5)
             else:
-                ttk.Button(self.root, text=label, command=lambda l=label: self.add_digit(l)).grid(row=row, column=col)
-            col += 1
+                button.grid(row=row, column=col, pady=5, padx=5)
+                col += 1
             if col > 2:
                 col = 0
                 row += 1
@@ -201,19 +234,38 @@ class MetricsticsCalculator:
         # Create a new window for login
         self.login_window = tk.Toplevel(self.root)
         self.login_window.title("Login")
+        self.login_window.geometry('500x300')  # Set initial size of the window
+
+        # Create a main frame that will contain everything except the background
+        self.login_frame = ttk.Frame(self.login_window)
+        self.login_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Load the login image
+        self.login_original_image = Image.open("login.jpg")  # Replace with your image path
+        self.login_background_image = ImageTk.PhotoImage(self.login_original_image)
+
+        # Create a label with the image
+        self.login_image_label = tk.Label(self.login_window, image=self.login_background_image)
+        self.login_image_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Bind the resize event to an event handler specifically for the signup window
+        self.login_window.bind('<Configure>', self.resize_login_background)
+
+        # Ensure the image label is at the back
+        self.login_image_label.lower()
 
         # Entry for username
-        ttk.Label(self.login_window, text="Username:").grid(row=0, column=0, padx=10, pady=10)
-        self.username_entry = ttk.Entry(self.login_window, width=20)
+        ttk.Label(self.login_frame, text="Username:").grid(row=0, column=0, padx=10, pady=10)
+        self.username_entry = ttk.Entry(self.login_frame, width=20)
         self.username_entry.grid(row=0, column=1, padx=10, pady=10)
 
         # Entry for password
-        ttk.Label(self.login_window, text="Password:").grid(row=1, column=0, padx=10, pady=10)
-        self.password_entry = ttk.Entry(self.login_window, show="*", width=20)
+        ttk.Label(self.login_frame, text="Password:").grid(row=1, column=0, padx=10, pady=10)
+        self.password_entry = ttk.Entry(self.login_frame, show="*", width=20)
         self.password_entry.grid(row=1, column=1, padx=10, pady=10)
 
         # Login button in the login window
-        ttk.Button(self.login_window, text="Login", command=lambda: self.login(self.login_window)).grid(row=2, column=0,
+        ttk.Button(self.login_frame, text="Login", command=lambda: self.login(self.login_frame)).grid(row=2, column=0,
                                                                                                         columnspan=2,
                                                                                                         pady=10)
 
@@ -238,24 +290,60 @@ class MetricsticsCalculator:
             # Failed login
             messagebox.showerror("Login Failed", "Invalid username or password")
 
+    def resize_login_background(self, event):
+        # Check if the original image has been loaded
+        if hasattr(self, 'login_original_image'):
+            # Resize the background image to the size of the window
+            new_width, new_height = event.width, event.height
+            image = self.login_original_image.resize((new_width, new_height), Image.LANCZOS)
+
+            # Update the image of the background label
+            self.login_background_image = ImageTk.PhotoImage(image)
+            self.login_image_label.config(image=self.login_background_image)
+            self.login_image_label.image = self.login_background_image  # Keep a reference!
+
     def show_signup_window(self):
         # Create a new window for signup
-        signup_window = tk.Toplevel(self.root)
-        signup_window.title("Signup")
+        self.signup_window = tk.Toplevel(self.root)
+        self.signup_window.title("Signup")
+        self.signup_window.geometry('500x300')  # Set initial size of the window
+
+
+        # Create a main frame that will contain everything except the background
+        self.signup_frame = ttk.Frame(self.signup_window)
+        self.signup_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Load the signup image
+        self.signup_original_image = Image.open("signup.jpg")  # Replace with your image path
+        self.signup_background_image = ImageTk.PhotoImage(self.signup_original_image)
+
+        # Create a label with the image
+        self.signup_image_label = tk.Label(self.signup_window, image=self.signup_background_image)
+        self.signup_image_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+        # Bind the resize event to an event handler specifically for the signup window
+        self.signup_window.bind('<Configure>', self.resize_signup_background)
+
+        # Ensure the image label is at the back
+        self.signup_image_label.lower()
+
+
 
         # Entry for new username
-        ttk.Label(signup_window, text="New Username:").grid(row=0, column=0, padx=10, pady=10)
-        self.new_username_entry = ttk.Entry(signup_window, width=20)
+        ttk.Label(self.signup_frame, text="New Username:").grid(row=0, column=0, padx=10, pady=10)
+        self.new_username_entry = ttk.Entry(self.signup_frame, width=20)
         self.new_username_entry.grid(row=0, column=1, padx=10, pady=10)
 
         # Entry for new password
-        ttk.Label(signup_window, text="New Password:").grid(row=1, column=0, padx=10, pady=10)
-        self.new_password_entry = ttk.Entry(signup_window, show="*", width=20)
+        ttk.Label(self.signup_frame, text="New Password:").grid(row=1, column=0, padx=10, pady=10)
+        self.new_password_entry = ttk.Entry(self.signup_frame, show="*", width=20)
         self.new_password_entry.grid(row=1, column=1, padx=10, pady=10)
 
         # Signup button in the signup window
-        ttk.Button(signup_window, text="Signup", command=lambda: self.signup(signup_window)).grid(row=2, column=0,
+        ttk.Button(self.signup_frame, text="Signup", command=lambda: self.signup(self.signup_frame)).grid(row=2, column=0,
                                                                                                   columnspan=2, pady=10)
+
+
 
     def signup(self, signup_window):
         # Get new username and password
@@ -276,6 +364,18 @@ class MetricsticsCalculator:
             # Successful signup
             messagebox.showinfo("Signup Successful", "User created successfully. You can now log in.")
             signup_window.destroy()
+
+    def resize_signup_background(self, event):
+        # Check if the original image has been loaded
+        if hasattr(self, 'signup_original_image'):
+            # Resize the background image to the size of the window
+            new_width, new_height = event.width, event.height
+            image = self.signup_original_image.resize((new_width, new_height), Image.LANCZOS)
+
+            # Update the image of the background label
+            self.signup_background_image = ImageTk.PhotoImage(image)
+            self.signup_image_label.config(image=self.signup_background_image)
+            self.signup_image_label.image = self.signup_background_image  # Keep a reference!
 
     def save_dataset(self):
         # Check if a user is logged in
