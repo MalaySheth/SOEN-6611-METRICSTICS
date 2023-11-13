@@ -15,7 +15,7 @@ class MetricsticsCalculator:
         self.root.title("METRICSTICS Calculator - (Team O)")
 
         # Username label at the top
-        self.username_label = ttk.Label(self.root, text="Logged in as: Guest", font=('Helvetica', 12))
+        self.username_label = ttk.Label(self.root, text="Logged in as: Guest", font=('Helvetica', 13))
         self.username_label.grid(row=0, column=4, columnspan=4, padx=10, pady=10)
 
         # Entry for data input
