@@ -170,6 +170,10 @@ class MetricsticsCalculator:
             self.result_label.config(text="Data successfully loaded from csv")
 
     def show_login_window(self):
+        if self.logged_in_username:
+            messagebox.showinfo("Already Logged In", "Please logout before logging in with another account.")
+            return
+
         # Create a new window for login
         self.login_window = tk.Toplevel(self.root)
         self.login_window.title("Login")
