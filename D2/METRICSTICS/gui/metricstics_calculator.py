@@ -49,6 +49,8 @@ class MetricsticsCalculator:
         # "Show History" button
         ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=6, column=4)
 
+        ttk.Button(self.root, text="Signup", command=self.show_signup_window).grid(row=7, column=4)
+
         # "Login" button
         ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=8, column=4)
 
@@ -207,6 +209,42 @@ class MetricsticsCalculator:
         else:
             # Failed login
             messagebox.showerror("Login Failed", "Invalid username or password")
+
+    def show_signup_window(self):
+        # Create a new window for signup
+        signup_window = tk.Toplevel(self.root)
+        signup_window.title("Signup")
+
+        # Entry for new username
+        ttk.Label(signup_window, text="New Username:").grid(row=0, column=0, padx=10, pady=10)
+        self.new_username_entry = ttk.Entry(signup_window, width=20)
+        self.new_username_entry.grid(row=0, column=1, padx=10, pady=10)
+
+        # Entry for new password
+        ttk.Label(signup_window, text="New Password:").grid(row=1, column=0, padx=10, pady=10)
+        self.new_password_entry = ttk.Entry(signup_window, show="*", width=20)
+        self.new_password_entry.grid(row=1, column=1, padx=10, pady=10)
+
+        # Signup button in the signup window
+        ttk.Button(signup_window, text="Signup", command=lambda: self.signup(signup_window)).grid(row=2, column=0,
+                                                                                                  columnspan=2, pady=10)
+
+    def signup(self, signup_window):
+        # Get new username and password
+        new_username = self.new_username_entry.get()
+        new_password = self.new_password_entry.get()
+
+        # Validate and create a new user using UserManager
+        user_manager = UserManagement()
+        success = user_manager.signup_user(new_username, new_password)
+
+        if success:
+            # Successful signup
+            messagebox.showinfo("Signup Successful", "User created successfully. You can now log in.")
+            signup_window.destroy()
+        else:
+            # Failed signup
+            messagebox.showerror("Signup Failed", "Failed to create user. Please try again.")
 
     def save_dataset(self):
         # Check if a user is logged in

@@ -55,6 +55,32 @@ class UserManagement:
             print(f'Error: {e}')
             return False
 
+    def signup_user(self, username, password):
+        try:
+            cursor = self.connection.cursor()
+
+            # Check if the username already exists
+            cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                print("Username already exists. Please choose a different username.")
+                return False
+            elif not username or not password:
+                print("Username and password cannot be empty.")
+                return False
+            else:
+                # Create a new user entry
+                cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)",
+                               (username, password))
+                self.connection.commit()
+                print("Signup successful. You can now log in.")
+                return True
+
+        except Error as e:
+            print(f'Error: {e}')
+            return False
+
     def save_dataset(self, user_id, dataset_name, data):
         try:
             # Convert the list to a JSON string
