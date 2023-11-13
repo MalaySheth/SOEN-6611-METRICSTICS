@@ -46,20 +46,23 @@ class MetricsticsCalculator:
         # "Save Dataset" button
         ttk.Button(self.root, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
 
-        # "Show History" button
-        ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=6, column=4)
+        # "Reset Dataset" button
+        ttk.Button(self.root, text="Reset Dataset", command=self.reset_dataset).grid(row=6, column=4)
 
-        ttk.Button(self.root, text="Signup", command=self.show_signup_window).grid(row=7, column=4)
+        # "Show History" button
+        ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=7, column=4)
+
+        ttk.Button(self.root, text="Signup", command=self.show_signup_window).grid(row=9, column=4)
 
         # "Login" button
-        ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=8, column=4)
+        ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=10, column=4)
 
         # logout button
-        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=9, column=4)
+        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=11, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.root, text="", font=('Helvetica', 16))
-        self.result_label.grid(row=9, column=0, columnspan=4, padx=10, pady=10)
+        self.result_label.grid(row=12, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
         self.values = []
@@ -294,6 +297,20 @@ class MetricsticsCalculator:
                 self.result_label.config(text="No data to save.")
         else:
             self.result_label.config(text="Please login before saving the dataset.")
+
+    def reset_dataset(self):
+        # Ask for confirmation
+        confirmation = tkinter.simpledialog.askstring("Confirmation",
+                                                      "Are you sure you want to empty the current dataset values? "
+                                                      "(yes/no)")
+
+        if confirmation and confirmation.lower() == 'yes':
+            # Reset the dataset
+            self.values = []
+            self.data_entry.delete(0, tk.END)
+            self.result_label.config(text="Dataset reset successfully.")
+        else:
+            self.result_label.config(text="Dataset reset canceled.")
 
     def show_history(self):
         if self.logged_in_username:
