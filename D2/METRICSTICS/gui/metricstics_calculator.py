@@ -96,8 +96,6 @@ class MetricsticsCalculator:
         # Variable to store the login window
         self.login_window = None
 
-        # self.root.bind('<Configure>', self.center_widgets)
-
     def resize_background(self, event):
         # Resize the background image to the size of the window
         new_size = (event.width, event.height)
@@ -384,6 +382,7 @@ class MetricsticsCalculator:
             messagebox.showinfo("Cannot be Empty", "Username and password cannot be empty.")
             return
 
+        #Technical Dept
         # Validate and create a new user using UserManager
         user_manager = UserManager()
         user_exists = user_manager.signup_user(new_username, new_password)
