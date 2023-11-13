@@ -107,3 +107,17 @@ class UserManager:
         except Error as e:
             print(f'Error: {e}')
             return []
+
+    # Inside UserManager class
+    def delete_dataset(self, dataset_id, logged_in_userid):
+        query = "DELETE FROM datasets WHERE id = %s AND user_id = %s"
+        values = (dataset_id, logged_in_userid)
+
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(query, values)
+            self.connection.commit()
+        except Exception as e:
+            print(f"Error deleting dataset: {e}")
+            self.connection.rollback()
+

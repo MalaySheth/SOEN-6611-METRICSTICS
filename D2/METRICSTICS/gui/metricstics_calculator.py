@@ -15,7 +15,7 @@ class MetricsticsCalculator:
         self.root.title("METRICSTICS Calculator - (Team O)")
 
         # Username label at the top
-        self.username_label = ttk.Label(self.root, text="Logged in as: Guest", font=('Helvetica', 12))
+        self.username_label = ttk.Label(self.root, text="Logged in as: Guest", font=('Helvetica', 13))
         self.username_label.grid(row=0, column=4, columnspan=4, padx=10, pady=10)
 
         # Entry for data input
@@ -46,20 +46,23 @@ class MetricsticsCalculator:
         # "Save Dataset" button
         ttk.Button(self.root, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
 
-        # "Show History" button
-        ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=6, column=4)
+        # "Reset Dataset" button
+        ttk.Button(self.root, text="Reset Dataset", command=self.reset_dataset).grid(row=6, column=4)
 
-        ttk.Button(self.root, text="Signup", command=self.show_signup_window).grid(row=7, column=4)
+        # "Show History" button
+        ttk.Button(self.root, text="Show History", command=self.show_history).grid(row=7, column=4)
+
+        ttk.Button(self.root, text="Signup", command=self.show_signup_window).grid(row=9, column=4)
 
         # "Login" button
-        ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=8, column=4)
+        ttk.Button(self.root, text="Login", command=self.show_login_window).grid(row=10, column=4)
 
         # logout button
-        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=9, column=4)
+        ttk.Button(self.root, text="Logout", command=self.logout).grid(row=11, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.root, text="", font=('Helvetica', 16))
-        self.result_label.grid(row=9, column=0, columnspan=4, padx=10, pady=10)
+        self.result_label.grid(row=12, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
         self.values = []
@@ -295,6 +298,19 @@ class MetricsticsCalculator:
         else:
             self.result_label.config(text="Please login before saving the dataset.")
 
+    def reset_dataset(self):
+        # Ask for confirmation
+        confirmation = messagebox.askyesno("Confirmation",
+                                           "Are you sure you want to empty the current dataset values?")
+
+        if confirmation:
+            # Reset the dataset
+            self.values = []
+            self.data_entry.delete(0, tk.END)
+            self.result_label.config(text="Dataset reset successfully.")
+        else:
+            self.result_label.config(text="Dataset reset canceled.")
+
     def show_history(self):
         if self.logged_in_username:
             # Create a new window for showing history
@@ -312,6 +328,28 @@ class MetricsticsCalculator:
                 item = tree.selection()
                 if item:
                     selected_row = tree.item(item, "values")
+
+            def delete_selected_dataset():
+                nonlocal selected_row
+                if selected_row:
+                    dataset_id = selected_row[0]
+                    dataset_name = selected_row[1]
+
+                    # Ask for confirmation
+                    confirmation = messagebox.askyesno("Confirmation",
+                                                       f"Are you sure you want to delete the dataset '{dataset_name}'?")
+
+                    if confirmation:
+                        # Call the delete_dataset method in UserManager to delete the dataset
+                        user_manager.delete_dataset(dataset_id, self.logged_in_userid)
+                        messagebox.showinfo("Dataset Deleted", "Dataset successfully deleted.")
+
+                        # Refresh the history window after deletion
+                        history_window.destroy()
+                        self.show_history()
+                else:
+                    messagebox.showinfo("No Dataset Selected", "Please select a dataset to delete.")
+                    message_label.config(text="Please select a row before clicking Delete DataSet")
 
             # Create a Treeview widget for displaying the table
             tree = ttk.Treeview(history_window, selectmode="browse")
@@ -341,12 +379,16 @@ class MetricsticsCalculator:
 
             # Create a label for displaying messages
             message_label = ttk.Label(history_window, text="")
-            message_label.grid(row=len(historical_data) + 2, column=0, columnspan=2, pady=10)
+            message_label.grid(row=len(historical_data) + 3, column=0, columnspan=2, pady=10)
 
             # Add a "Load DataSet" button at the bottom
             load_button = ttk.Button(history_window, text="Load DataSet",
                                      command=lambda: self.load_selected_dataset(selected_row, message_label))
-            load_button.grid(row=len(historical_data) + 1, column=0, columnspan=3, pady=10)
+            load_button.grid(row=len(historical_data) + 1, column=0, pady=10)
+
+            # Add a "Delete DataSet" button at the bottom under the table
+            delete_button = ttk.Button(history_window, text="Delete DataSet", command=delete_selected_dataset)
+            delete_button.grid(row=len(historical_data) + 2, column=0, pady=10)
 
             # Make the window resizable
             history_window.resizable(True, True)
@@ -380,6 +422,7 @@ class MetricsticsCalculator:
                 message_label.config(text="Error loading dataset. Please check the format of the data.")
                 self.result_label.config(text="Error loading dataset. Please check the format of the data.")
         else:
+            messagebox.showinfo("No Dataset Selected", "Please select a dataset to load.")
             message_label.config(text="Please select a row before clicking Load DataSet")
             self.result_label.config(text="Please select a row before clicking Load DataSet")
 
