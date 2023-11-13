@@ -48,6 +48,8 @@ class MetricsticsCalculator:
         ttk.Button(self.main_frame, text="-", command=lambda: self.add_minus()).grid(row=5, column=2)
         ttk.Button(self.main_frame, text="Clear", command=self.clear_entry).grid(row=2, column=4)
         ttk.Button(self.main_frame, text="Append", command=self.add_value).grid(row=3, column=4)
+        # "Calculate All" button
+        ttk.Button(self.main_frame, text="Calculate All", command=self.calculate_all).grid(row=4, column=4)
 
         # Buttons for statistics calculations
         ttk.Button(self.main_frame, text="Mean", command=self.calculate_mean).grid(row=6, column=0)
@@ -59,28 +61,31 @@ class MetricsticsCalculator:
         ttk.Button(self.main_frame, text="Std Dev", command=self.calculate_std_dev).grid(row=8, column=1)
 
         # "Upload CSV" button
-        ttk.Button(self.main_frame, text="Upload CSV", command=self.upload_csv).grid(row=4, column=4)
+        ttk.Button(self.main_frame, text="Upload CSV", command=self.upload_csv).grid(row=5, column=4)
 
         # "Save Dataset" button
-        ttk.Button(self.main_frame, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
+        ttk.Button(self.main_frame, text="Save Dataset", command=self.save_dataset).grid(row=6, column=4)
 
         # "Reset Dataset" button
-        ttk.Button(self.main_frame, text="Reset Dataset", command=self.reset_dataset).grid(row=6, column=4)
+        ttk.Button(self.main_frame, text="Reset Dataset", command=self.reset_dataset).grid(row=7, column=4)
 
         # "Show History" button
-        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=7, column=4)
+        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=8, column=4)
 
-        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=9, column=4)
+        # Add an empty row to create vertical space
+        self.main_frame.grid_rowconfigure(9, minsize=20)
+
+        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=10, column=4)
 
         # "Login" button
-        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=10, column=4)
+        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=11, column=4)
 
         # logout button
-        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=11, column=4)
+        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=12, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.main_frame, text="", font=('Helvetica', 16))
-        self.result_label.grid(row=12, column=0, columnspan=4, padx=10, pady=10)
+        self.result_label.grid(row=13, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
         self.values = []
@@ -109,7 +114,7 @@ class MetricsticsCalculator:
             button = ttk.Button(self.main_frame, text=label, command=lambda l=label: self.add_digit(l))
             if label == "0":
                 # Place the "0" button in the center of the 4th row
-                button.grid(row=row, column=col+1, pady=5, padx=5)
+                button.grid(row=row, column=col + 1, pady=5, padx=5)
             else:
                 button.grid(row=row, column=col, pady=5, padx=5)
             col += 1
@@ -209,6 +214,38 @@ class MetricsticsCalculator:
         statistics = DataStatistics(self.values)
         std_dev = statistics.standard_deviation()
         self.result_label.config(text=f"Std Dev: {std_dev:.2f}")
+
+    def calculate_all(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating.")
+            return
+
+        statistics = DataStatistics(self.values)
+
+        mean_value = statistics.mean()
+        median_value = statistics.calculate_median()
+        mode_values = statistics.mode()
+        minimum_value = statistics.minimum()
+        maximum_value = statistics.maximum()
+        mad_value = statistics.mean_absolute_deviation()
+        std_dev = statistics.standard_deviation()
+
+        # Display the results
+        result_text = f"Mean (μ): {mean_value:.2f}\n"
+        result_text += f"Median: {median_value:.2f}\n"
+
+        if len(mode_values) <= 10:
+            mode_str = ', '.join(map(str, mode_values))
+        else:
+            mode_str = f"{len(mode_values)} mode values found."
+        result_text += f"Mode: {mode_str}\n"
+
+        result_text += f"Minimum: {minimum_value:.2f}\n"
+        result_text += f"Maximum: {maximum_value:.2f}\n"
+        result_text += f"MAD: {mad_value:.2f}\n"
+        result_text += f"Std Dev: {std_dev:.2f}"
+
+        self.result_label.config(text=result_text)
 
     def upload_csv(self):
         # Open a file dialog to select a CSV file
