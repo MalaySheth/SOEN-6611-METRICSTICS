@@ -109,10 +109,10 @@ class MetricsticsCalculator:
             button = ttk.Button(self.main_frame, text=label, command=lambda l=label: self.add_digit(l))
             if label == "0":
                 # Place the "0" button in the center of the 4th row
-                button.grid(row=row + 2, column=1, pady=5, padx=5)
+                button.grid(row=row, column=col+1, pady=5, padx=5)
             else:
                 button.grid(row=row, column=col, pady=5, padx=5)
-                col += 1
+            col += 1
             if col > 2:
                 col = 0
                 row += 1
