@@ -6,9 +6,9 @@ from tkinter import ttk, filedialog, messagebox
 
 from PIL import Image, ImageTk
 
-from METRICSTICS.data_computation.data_processor import DataProcessor
-from METRICSTICS.data_computation.data_statistics import DataStatistics
-from METRICSTICS.user_management.user_manager import UserManager
+from D2.METRICSTICS.data_computation.data_processor import DataProcessor
+from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
+from D2.METRICSTICS.user_management.user_manager import UserManager
 
 
 class MetricsticsCalculator:
@@ -31,8 +31,6 @@ class MetricsticsCalculator:
         # Create a main frame that will contain everything except the background
         self.main_frame = ttk.Frame(self.root)
         self.main_frame.place(relx=0.5, rely=0.5, anchor="center")
-
-
 
         # Username label at the top
         self.username_label = ttk.Label(self.main_frame, text="Logged in as: Guest", font=('Helvetica', 13))
@@ -93,7 +91,7 @@ class MetricsticsCalculator:
         # Variable to store the login window
         self.login_window = None
 
-        #self.root.bind('<Configure>', self.center_widgets)
+        # self.root.bind('<Configure>', self.center_widgets)
 
     def resize_background(self, event):
         # Resize the background image to the size of the window
@@ -102,8 +100,6 @@ class MetricsticsCalculator:
         self.background_image = ImageTk.PhotoImage(resized_image)
         self.background_label.config(image=self.background_image)
         self.background_label.image = self.background_image  # Keep a reference
-
-
 
     def create_digit_buttons(self):
         button_labels = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"]
@@ -265,11 +261,11 @@ class MetricsticsCalculator:
         self.password_entry.grid(row=1, column=1, padx=10, pady=10)
 
         # Login button in the login window
-        ttk.Button(self.login_frame, text="Login", command=lambda: self.login(self.login_frame)).grid(row=2, column=0,
-                                                                                                        columnspan=2,
-                                                                                                        pady=10)
+        ttk.Button(self.login_frame, text="Login", command=lambda: self.login()).grid(row=2, column=0,
+                                                                                      columnspan=2,
+                                                                                      pady=10)
 
-    def login(self, login_window):
+    def login(self):
         # Get entered username and password
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
@@ -285,7 +281,7 @@ class MetricsticsCalculator:
             messagebox.showinfo("Login Successful", "Welcome, " + entered_username + "!")
 
             # Close the login window
-            login_window.destroy()
+            self.login_window.destroy()
         else:
             # Failed login
             messagebox.showerror("Login Failed", "Invalid username or password")
@@ -308,7 +304,6 @@ class MetricsticsCalculator:
         self.signup_window.title("Signup")
         self.signup_window.geometry('500x300')  # Set initial size of the window
 
-
         # Create a main frame that will contain everything except the background
         self.signup_frame = ttk.Frame(self.signup_window)
         self.signup_frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -327,8 +322,6 @@ class MetricsticsCalculator:
         # Ensure the image label is at the back
         self.signup_image_label.lower()
 
-
-
         # Entry for new username
         ttk.Label(self.signup_frame, text="New Username:").grid(row=0, column=0, padx=10, pady=10)
         self.new_username_entry = ttk.Entry(self.signup_frame, width=20)
@@ -340,12 +333,12 @@ class MetricsticsCalculator:
         self.new_password_entry.grid(row=1, column=1, padx=10, pady=10)
 
         # Signup button in the signup window
-        ttk.Button(self.signup_frame, text="Signup", command=lambda: self.signup(self.signup_frame)).grid(row=2, column=0,
-                                                                                                  columnspan=2, pady=10)
+        ttk.Button(self.signup_frame, text="Signup", command=lambda: self.signup()).grid(row=2,
+                                                                                         column=0,
+                                                                                         columnspan=2,
+                                                                                         pady=10)
 
-
-
-    def signup(self, signup_window):
+    def signup(self):
         # Get new username and password
         new_username = self.new_username_entry.get()
         new_password = self.new_password_entry.get()
@@ -363,7 +356,7 @@ class MetricsticsCalculator:
         else:
             # Successful signup
             messagebox.showinfo("Signup Successful", "User created successfully. You can now log in.")
-            signup_window.destroy()
+            self.signup_window.destroy()
 
     def resize_signup_background(self, event):
         # Check if the original image has been loaded
