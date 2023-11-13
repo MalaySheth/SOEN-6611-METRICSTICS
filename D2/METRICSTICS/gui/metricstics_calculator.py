@@ -32,8 +32,6 @@ class MetricsticsCalculator:
         self.main_frame = ttk.Frame(self.root)
         self.main_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-
-
         # Username label at the top
         self.username_label = ttk.Label(self.main_frame, text="Logged in as: Guest", font=('Helvetica', 13))
         self.username_label.grid(row=0, column=4, columnspan=4, padx=10, pady=10)
@@ -93,8 +91,6 @@ class MetricsticsCalculator:
         # Variable to store the login window
         self.login_window = None
 
-        #self.root.bind('<Configure>', self.center_widgets)
-
     def resize_background(self, event):
         # Resize the background image to the size of the window
         new_size = (event.width, event.height)
@@ -102,8 +98,6 @@ class MetricsticsCalculator:
         self.background_image = ImageTk.PhotoImage(resized_image)
         self.background_label.config(image=self.background_image)
         self.background_label.image = self.background_image  # Keep a reference
-
-
 
     def create_digit_buttons(self):
         button_labels = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"]
@@ -343,8 +337,6 @@ class MetricsticsCalculator:
         ttk.Button(self.signup_frame, text="Signup", command=lambda: self.signup(self.signup_frame)).grid(row=2, column=0,
                                                                                                   columnspan=2, pady=10)
 
-
-
     def signup(self, signup_window):
         # Get new username and password
         new_username = self.new_username_entry.get()
@@ -354,6 +346,7 @@ class MetricsticsCalculator:
             messagebox.showinfo("Cannot be Empty", "Username and password cannot be empty.")
             return
 
+        #Technical Dept
         # Validate and create a new user using UserManager
         user_manager = UserManager()
         user_exists = user_manager.signup_user(new_username, new_password)
