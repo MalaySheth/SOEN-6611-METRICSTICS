@@ -4,7 +4,7 @@ import mysql.connector
 from mysql.connector import Error
 
 
-class UserManagement:
+class UserManager:
     def __init__(self):
         self.connection = self.create_connection()
 

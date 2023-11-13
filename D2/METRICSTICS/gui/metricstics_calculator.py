@@ -6,7 +6,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from D2.METRICSTICS.data_computation.data_processor import DataProcessor
 from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
-from D2.METRICSTICS.user_management.user_manager import UserManagement
+from D2.METRICSTICS.user_management.user_manager import UserManager
 
 
 class MetricsticsCalculator:
@@ -117,16 +117,25 @@ class MetricsticsCalculator:
         self.data_entry.delete(0, tk.END)
 
     def calculate_mean(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the mean.")
+            return
         statistics = DataStatistics(self.values)
         mean_value = statistics.mean()
         self.result_label.config(text=f"Mean (μ): {mean_value:.2f}")
 
     def calculate_median(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the median.")
+            return
         statistics = DataStatistics(self.values)
         median_value = statistics.calculate_median()
         self.result_label.config(text=f"Median: {median_value:.2f}")
 
     def calculate_mode(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the mode.")
+            return
         statistics = DataStatistics(self.values)
         mode_values = statistics.mode()
 
@@ -138,21 +147,33 @@ class MetricsticsCalculator:
         self.result_label.config(text=f"Mode: {mode_str}")
 
     def calculate_minimum(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the minimum.")
+            return
         statistics = DataStatistics(self.values)
         minimum_value = statistics.minimum()
         self.result_label.config(text=f"Minimum: {minimum_value:.2f}")
 
     def calculate_maximum(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the maximum.")
+            return
         statistics = DataStatistics(self.values)
         maximum_value = statistics.maximum()
         self.result_label.config(text=f"Maximum: {maximum_value:.2f}")
 
     def calculate_mad(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the MAD.")
+            return
         statistics = DataStatistics(self.values)
         mad_value = statistics.mean_absolute_deviation()
         self.result_label.config(text=f"MAD: {mad_value:.2f}")
 
     def calculate_std_dev(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating the std dev.")
+            return
         statistics = DataStatistics(self.values)
         std_dev = statistics.standard_deviation()
         self.result_label.config(text=f"Std Dev: {std_dev:.2f}")
@@ -199,7 +220,7 @@ class MetricsticsCalculator:
         entered_password = self.password_entry.get()
 
         # Validate credentials using UserManager
-        user_manager = UserManagement()
+        user_manager = UserManager()
         user = user_manager.authenticate_user(entered_username, entered_password)
         if user:
             # Successful login
@@ -243,7 +264,7 @@ class MetricsticsCalculator:
             return
 
         # Validate and create a new user using UserManager
-        user_manager = UserManagement()
+        user_manager = UserManager()
         user_exists = user_manager.signup_user(new_username, new_password)
 
         if user_exists:
@@ -264,7 +285,7 @@ class MetricsticsCalculator:
                 # Check if the user provided a name
                 if dataset_name:
                     # Save the dataset using the DataSaver
-                    user_manager = UserManagement()
+                    user_manager = UserManager()
                     user_manager.save_dataset(self.logged_in_userid, dataset_name, self.values)
                     self.result_label.config(text="Dataset successfully saved.")
                 else:
@@ -281,7 +302,7 @@ class MetricsticsCalculator:
             history_window.title("Data History")
 
             # Get historical data from the backend using UserManagement
-            user_manager = UserManagement()
+            user_manager = UserManager()
             historical_data = user_manager.get_user_history(self.logged_in_userid)
 
             selected_row = None  # Variable to store the selected row
