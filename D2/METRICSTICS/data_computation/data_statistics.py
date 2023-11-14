@@ -21,7 +21,7 @@ class DataStatistics:
         if not self.data:
             return None
         # Use the custom utility function for counting
-        return len(self.data)
+        return CustomMathUtils.custom_count(self.data)
 
     def total(self):
         if not self.data:
@@ -34,7 +34,8 @@ class DataStatistics:
             return None
         mean_value = self.mean()
         absolute_deviations = [CustomMathUtils.custom_abs(value - mean_value) for value in self.data]
-        return sum(absolute_deviations) / len(self.data)
+        total_absolute_deviation = CustomMathUtils.custom_sum(absolute_deviations)
+        return total_absolute_deviation / CustomMathUtils.custom_count(self.data)
 
     def mode(self):
         if not self.data:
@@ -49,7 +50,7 @@ class DataStatistics:
                 value_counts[value] = 1
 
         # Find the mode(s) with the highest count
-        max_count = max(value_counts.values())
+        max_count = CustomMathUtils.custom_max(list(value_counts.values()))
         mode_values = [value for value, count in value_counts.items() if count == max_count]
 
         return mode_values
@@ -78,10 +79,10 @@ class DataStatistics:
     def calculate_median(self):
         if not self.data:
             return None
-        n = len(self.data)
-        data_copy = self.data.copy()  # Create a copy of the original data to avoid altering it
+        n = CustomMathUtils.custom_count(self.data)
+        data_copy = CustomMathUtils.custom_copy(self.data)  # Create a copy of the original data to avoid altering it
 
-        data_copy.sort()  # Sort the copied data in ascending order
+        CustomMathUtils.custom_sort(data_copy)  # Sort the copied data in ascending order
 
         if n % 2 == 1:
             # If the number of data points is odd, return the middle value

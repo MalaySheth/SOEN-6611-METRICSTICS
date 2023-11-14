@@ -31,3 +31,40 @@ class CustomMathUtils:
         if value < 0:
             return -value
         return value
+
+    @staticmethod
+    def custom_sort(data):
+        if not data:
+            return None
+        n = len(data)
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if data[j] > data[j + 1]:
+                    data[j], data[j + 1] = data[j + 1], data[j]
+        return data
+
+    @staticmethod
+    def custom_count(data):
+        if not data:
+            return None
+        count = 0
+        for _ in data:
+            count += 1
+        return count
+
+    @staticmethod
+    def custom_copy(data):
+        """
+        Create a copy of the original data to avoid altering it.
+
+        Parameters:
+        - data: The original data to be copied.
+
+        Returns:
+        - A copy of the original data.
+        """
+        if data is None:
+            return None
+
+        # Custom implementation of copying the data
+        return data[:]
