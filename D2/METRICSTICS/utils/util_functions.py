@@ -1,3 +1,6 @@
+import random
+
+
 class CustomMathUtils:
     @staticmethod
     def custom_max(data):
@@ -68,3 +71,20 @@ class CustomMathUtils:
 
         # Custom implementation of copying the data
         return data[:]
+
+    @staticmethod
+    def generate_random_values(num_values, value_range):
+        """
+        Generate random data values between 0 and the specified range.
+
+        Parameters:
+        - num_values (int): Number of values to generate.
+        - value_range (int): Range of values to generate.
+
+        Returns:
+        - list: List of randomly generated values.
+        """
+        if num_values < 1 or value_range < 1:
+            return []
+
+        return [random.uniform(0, value_range) for _ in range(num_values)]

@@ -2,16 +2,14 @@ import json
 import tkinter
 import tkinter as tk
 import tkinter.simpledialog
-from tkinter import ttk, filedialog, messagebox
+from tkinter import ttk, filedialog, messagebox, simpledialog
 
 from PIL import Image, ImageTk
 
 from D2.METRICSTICS.data_computation.data_processor import DataProcessor
 from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
 from D2.METRICSTICS.user_management.user_manager import UserManager
-
 from D2.METRICSTICS.utils.util_functions import CustomMathUtils
-
 
 
 class MetricsticsCalculator:
@@ -72,23 +70,27 @@ class MetricsticsCalculator:
         # "Reset Dataset" button
         ttk.Button(self.main_frame, text="Reset Dataset", command=self.reset_dataset).grid(row=7, column=4)
 
+        ttk.Button(self.main_frame, text="Generate Data", command=self.generate_data_set).grid(row=8, column=4)
+
         # "Show History" button
-        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=8, column=4)
+        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=9, column=4)
+
 
         # Add an empty row to create vertical space
-        self.main_frame.grid_rowconfigure(9, minsize=20)
+        self.main_frame.grid_rowconfigure(10, minsize=20)
 
-        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=10, column=4)
+        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=11, column=4)
+
 
         # "Login" button
-        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=11, column=4)
+        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=12, column=4)
 
         # logout button
-        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=12, column=4)
+        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=13, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.main_frame, text="", font=('Helvetica', 16))
-        self.result_label.grid(row=13, column=0, columnspan=4, padx=10, pady=10)
+        self.result_label.grid(row=14, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
         self.values = []
@@ -235,10 +237,10 @@ class MetricsticsCalculator:
         result_text = f"Mean (μ): {mean_value:.2f}\n"
         result_text += f"Median: {median_value:.2f}\n"
 
-        if len(mode_values) <= 10:
+        if CustomMathUtils.custom_count(mode_values) <= 10:
             mode_str = ', '.join(map(str, mode_values))
         else:
-            mode_str = f"{len(mode_values)} mode values found."
+            mode_str = f"{CustomMathUtils.custom_count(mode_values)} mode values found."
         result_text += f"Mode: {mode_str}\n"
 
         result_text += f"Minimum: {minimum_value:.2f}\n"
@@ -429,6 +431,69 @@ class MetricsticsCalculator:
                 self.result_label.config(text="No data to save.")
         else:
             self.result_label.config(text="Please login before saving the dataset.")
+
+    def generate_data_set(self):
+        # Ask the user for the number of values to generate
+        num_values = simpledialog.askinteger("Generate DataSet",
+                                             "Enter the number of values to generate (up to 1000):",
+                                             minvalue=1, maxvalue=1000)
+        if num_values is None:
+            return  # User clicked Cancel
+
+        # Ask the user for the range of values
+        value_range = simpledialog.askinteger("Generate DataSet",
+                                              "Enter the range of values to generate (up to 1000):",
+                                              minvalue=1, maxvalue=1000)
+        if value_range is None:
+            return
+
+        self.result_label.config(text="Generating random values.....")
+        # Generate random data values between 0 and the user-provided range
+        random_values = CustomMathUtils.generate_random_values(num_values, value_range)
+        self.result_label.config(text="Loading random values on screen.....")
+        # Show the generated values in a new window with a vertical scrollbar
+        self.show_generated_values(random_values)
+
+    def show_generated_values(self, values):
+        # Create a new window for showing the generated values
+        generated_values_window = tk.Toplevel(self.root)
+        generated_values_window.title("Generated DataSet")
+
+        # Create a Text widget for displaying the values
+        text_widget = tk.Text(generated_values_window, wrap="none", width=30, height=20)
+        text_widget.grid(row=0, column=0, padx=10, pady=5, sticky="nsew")
+
+        # Add a vertical scrollbar
+        scrollbar = ttk.Scrollbar(generated_values_window, orient="vertical", command=text_widget.yview)
+        scrollbar.grid(row=0, column=1, sticky="ns")
+        text_widget.configure(yscrollcommand=scrollbar.set)
+
+        # Insert values into the Text widget
+        for value in values:
+            text_widget.insert(tk.END, f"{value:.2f}\n")
+
+            # Add a label to ask the user if they want to load the values into the dataset
+            label = ttk.Label(generated_values_window, text="Load values into the dataset?")
+            label.grid(row=1, column=0, pady=10)
+
+            # Add "Yes" and "No" buttons
+            ttk.Button(generated_values_window, text="Yes", command=lambda: self.load_generated_values(values, generated_values_window)).grid(
+                row=2, column=0)
+            ttk.Button(generated_values_window, text="No", command=generated_values_window.destroy).grid(row=3,
+                                                                                                         column=0)
+
+        # Make the window resizable
+        generated_values_window.resizable(True, True)
+
+    def load_generated_values(self, values, generated_values_window):
+        # Set self.values to the generated values
+        self.values = values
+
+        # Update the result label to indicate that values have been loaded
+        self.result_label.config(text="Generated values loaded into the dataset.")
+
+        # Close the generated values window
+        generated_values_window.destroy()
 
     def reset_dataset(self):
         # Ask for confirmation
