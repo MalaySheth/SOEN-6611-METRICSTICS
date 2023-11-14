@@ -10,6 +10,9 @@ from D2.METRICSTICS.data_computation.data_processor import DataProcessor
 from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
 from D2.METRICSTICS.user_management.user_manager import UserManager
 
+from D2.METRICSTICS.utils.util_functions import CustomMathUtils
+
+
 
 class MetricsticsCalculator:
     def __init__(self, root):
@@ -174,7 +177,7 @@ class MetricsticsCalculator:
         statistics = DataStatistics(self.values)
         mode_values = statistics.mode()
 
-        if len(mode_values) <= 10:
+        if CustomMathUtils.custom_count(mode_values) <= 10:
             mode_str = ', '.join(map(str, mode_values))
         else:
             mode_str = f"{len(mode_values)} mode values found."
