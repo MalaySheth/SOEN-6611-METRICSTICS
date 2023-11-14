@@ -9,7 +9,9 @@ from PIL import Image, ImageTk
 from D2.METRICSTICS.data_computation.data_processor import DataProcessor
 from D2.METRICSTICS.data_computation.data_statistics import DataStatistics
 from D2.METRICSTICS.user_management.user_manager import UserManager
+
 from D2.METRICSTICS.utils.util_functions import CustomMathUtils
+
 
 
 class MetricsticsCalculator:
@@ -49,6 +51,8 @@ class MetricsticsCalculator:
         ttk.Button(self.main_frame, text="-", command=lambda: self.add_minus()).grid(row=5, column=2)
         ttk.Button(self.main_frame, text="Clear", command=self.clear_entry).grid(row=2, column=4)
         ttk.Button(self.main_frame, text="Append", command=self.add_value).grid(row=3, column=4)
+        # "Calculate All" button
+        ttk.Button(self.main_frame, text="Calculate All", command=self.calculate_all).grid(row=4, column=4)
 
         # Buttons for statistics calculations
         ttk.Button(self.main_frame, text="Mean", command=self.calculate_mean).grid(row=6, column=0)
@@ -60,28 +64,31 @@ class MetricsticsCalculator:
         ttk.Button(self.main_frame, text="Std Dev", command=self.calculate_std_dev).grid(row=8, column=1)
 
         # "Upload CSV" button
-        ttk.Button(self.main_frame, text="Upload CSV", command=self.upload_csv).grid(row=4, column=4)
+        ttk.Button(self.main_frame, text="Upload CSV", command=self.upload_csv).grid(row=5, column=4)
 
         # "Save Dataset" button
-        ttk.Button(self.main_frame, text="Save Dataset", command=self.save_dataset).grid(row=5, column=4)
+        ttk.Button(self.main_frame, text="Save Dataset", command=self.save_dataset).grid(row=6, column=4)
 
         # "Reset Dataset" button
-        ttk.Button(self.main_frame, text="Reset Dataset", command=self.reset_dataset).grid(row=6, column=4)
+        ttk.Button(self.main_frame, text="Reset Dataset", command=self.reset_dataset).grid(row=7, column=4)
 
         # "Show History" button
-        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=7, column=4)
+        ttk.Button(self.main_frame, text="Show History", command=self.show_history).grid(row=8, column=4)
 
-        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=9, column=4)
+        # Add an empty row to create vertical space
+        self.main_frame.grid_rowconfigure(9, minsize=20)
+
+        ttk.Button(self.main_frame, text="Signup", command=self.show_signup_window).grid(row=10, column=4)
 
         # "Login" button
-        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=10, column=4)
+        ttk.Button(self.main_frame, text="Login", command=self.show_login_window).grid(row=11, column=4)
 
         # logout button
-        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=11, column=4)
+        ttk.Button(self.main_frame, text="Logout", command=self.logout).grid(row=12, column=4)
 
         # Label for displaying the result
         self.result_label = ttk.Label(self.main_frame, text="", font=('Helvetica', 16))
-        self.result_label.grid(row=12, column=0, columnspan=4, padx=10, pady=10)
+        self.result_label.grid(row=13, column=0, columnspan=4, padx=10, pady=10)
 
         # List to store values
         self.values = []
@@ -108,10 +115,10 @@ class MetricsticsCalculator:
             button = ttk.Button(self.main_frame, text=label, command=lambda l=label: self.add_digit(l))
             if label == "0":
                 # Place the "0" button in the center of the 4th row
-                button.grid(row=row + 2, column=1, pady=5, padx=5)
+                button.grid(row=row, column=col + 1, pady=5, padx=5)
             else:
                 button.grid(row=row, column=col, pady=5, padx=5)
-                col += 1
+            col += 1
             if col > 2:
                 col = 0
                 row += 1
@@ -209,6 +216,38 @@ class MetricsticsCalculator:
         std_dev = statistics.standard_deviation()
         self.result_label.config(text=f"Std Dev: {std_dev:.2f}")
 
+    def calculate_all(self):
+        if not self.values:
+            self.result_label.config(text="Dataset is empty. Please add values before calculating.")
+            return
+
+        statistics = DataStatistics(self.values)
+
+        mean_value = statistics.mean()
+        median_value = statistics.calculate_median()
+        mode_values = statistics.mode()
+        minimum_value = statistics.minimum()
+        maximum_value = statistics.maximum()
+        mad_value = statistics.mean_absolute_deviation()
+        std_dev = statistics.standard_deviation()
+
+        # Display the results
+        result_text = f"Mean (μ): {mean_value:.2f}\n"
+        result_text += f"Median: {median_value:.2f}\n"
+
+        if len(mode_values) <= 10:
+            mode_str = ', '.join(map(str, mode_values))
+        else:
+            mode_str = f"{len(mode_values)} mode values found."
+        result_text += f"Mode: {mode_str}\n"
+
+        result_text += f"Minimum: {minimum_value:.2f}\n"
+        result_text += f"Maximum: {maximum_value:.2f}\n"
+        result_text += f"MAD: {mad_value:.2f}\n"
+        result_text += f"Std Dev: {std_dev:.2f}"
+
+        self.result_label.config(text=result_text)
+
     def upload_csv(self):
         # Open a file dialog to select a CSV file
         file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
@@ -260,11 +299,11 @@ class MetricsticsCalculator:
         self.password_entry.grid(row=1, column=1, padx=10, pady=10)
 
         # Login button in the login window
-        ttk.Button(self.login_frame, text="Login", command=lambda: self.login(self.login_frame)).grid(row=2, column=0,
-                                                                                                        columnspan=2,
-                                                                                                        pady=10)
+        ttk.Button(self.login_frame, text="Login", command=lambda: self.login()).grid(row=2, column=0,
+                                                                                      columnspan=2,
+                                                                                      pady=10)
 
-    def login(self, login_window):
+    def login(self):
         # Get entered username and password
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
@@ -280,7 +319,7 @@ class MetricsticsCalculator:
             messagebox.showinfo("Login Successful", "Welcome, " + entered_username + "!")
 
             # Close the login window
-            login_window.destroy()
+            self.login_window.destroy()
         else:
             # Failed login
             messagebox.showerror("Login Failed", "Invalid username or password")
@@ -303,7 +342,6 @@ class MetricsticsCalculator:
         self.signup_window.title("Signup")
         self.signup_window.geometry('500x300')  # Set initial size of the window
 
-
         # Create a main frame that will contain everything except the background
         self.signup_frame = ttk.Frame(self.signup_window)
         self.signup_frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -322,8 +360,6 @@ class MetricsticsCalculator:
         # Ensure the image label is at the back
         self.signup_image_label.lower()
 
-
-
         # Entry for new username
         ttk.Label(self.signup_frame, text="New Username:").grid(row=0, column=0, padx=10, pady=10)
         self.new_username_entry = ttk.Entry(self.signup_frame, width=20)
@@ -335,10 +371,12 @@ class MetricsticsCalculator:
         self.new_password_entry.grid(row=1, column=1, padx=10, pady=10)
 
         # Signup button in the signup window
-        ttk.Button(self.signup_frame, text="Signup", command=lambda: self.signup(self.signup_frame)).grid(row=2, column=0,
-                                                                                                  columnspan=2, pady=10)
+        ttk.Button(self.signup_frame, text="Signup", command=lambda: self.signup()).grid(row=2,
+                                                                                         column=0,
+                                                                                         columnspan=2,
+                                                                                         pady=10)
 
-    def signup(self, signup_window):
+    def signup(self):
         # Get new username and password
         new_username = self.new_username_entry.get()
         new_password = self.new_password_entry.get()
@@ -357,7 +395,7 @@ class MetricsticsCalculator:
         else:
             # Successful signup
             messagebox.showinfo("Signup Successful", "User created successfully. You can now log in.")
-            signup_window.destroy()
+            self.signup_window.destroy()
 
     def resize_signup_background(self, event):
         # Check if the original image has been loaded
