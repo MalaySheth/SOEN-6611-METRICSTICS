@@ -237,10 +237,10 @@ class MetricsticsCalculator:
         result_text = f"Mean (μ): {mean_value:.2f}\n"
         result_text += f"Median: {median_value:.2f}\n"
 
-        if len(mode_values) <= 10:
+        if CustomMathUtils.custom_count(mode_values) <= 10:
             mode_str = ', '.join(map(str, mode_values))
         else:
-            mode_str = f"{len(mode_values)} mode values found."
+            mode_str = f"{CustomMathUtils.custom_count(mode_values)} mode values found."
         result_text += f"Mode: {mode_str}\n"
 
         result_text += f"Minimum: {minimum_value:.2f}\n"
